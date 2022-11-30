@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	
+	<munit:config name="sapi-store-test-suite2.xml" />
+	<munit:test name="sapi-store-test-suite-get:\customer:sapi-store-configTest1" doc:id="6fccc3fe-1f2e-4f7b-9e55-2191719eb509" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d5019e26-363a-46e5-8e43-0451de11c089" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching customer details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="2d04f671-ad56-4e98-9186-dec1357a7da4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\customer:sapi-store-config" doc:id="9cadd309-7c13-45ae-9023-b73879de4e79" name="get:\customer:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="89ac4d32-cf09-489f-a472-85396ba274ab" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-post:\customer:application\json:sapi-store-configTest" doc:id="a4a35083-8553-4f26-bf93-09274a98e2ca" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="98eeddd7-1f88-4f73-98de-b21784fc0fd9" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="5a2a6758-ee3d-495f-81a4-dbc1f64d7a89" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Inserting customer data" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="caf63809-0392-4e09-a83a-3e9afef89fbe" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://customer.json','application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\customer:application\json:sapi-store-config" doc:id="52fea97a-a6ca-4ccb-ad2a-647c05834643" name="post:\customer:application\json:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="24ff3b81-d436-4fba-a30a-31c442d42e01" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-put:\customer:sapi-store-configTest" doc:id="7a66c864-c87e-41bc-8b4d-6575dba2aec4" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2cbb62a7-5c96-4f40-94f3-a108939359da" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Updating customer details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="9ffe80aa-6c29-4eb6-b702-74c1def9c6a1" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="445cbe8c-4b2d-414c-a106-3db002939c26" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://customer.json','application/json')]" />
+				<munit:attributes value='#[{&#10;"queryParams" : {"customerId":"5"}&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\customer:sapi-store-config" doc:id="1e638cd5-6261-4d6b-8bad-892c2814eb60" name="put:\customer:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="491d516d-b528-4289-91d6-22f2a59af046" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-delete:\customer:sapi-store-configTest" doc:id="91847dce-755a-45f4-b2bf-7b25eb8f0d19" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a70a0bb6-ab81-4356-9f6d-af61b4b75d48" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Deleting customer Data" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="9cee50e0-19f9-4c10-b43b-ab4dbb1330e5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="34150281-45db-4fe6-8dfa-4681a6154313" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://customer.json','application/json')]" />
+				<munit:attributes value='#[&#10;{"queryParams": {"customerId":"5"}}&#10;]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to delete:\customer:sapi-store-config" doc:id="a34f6191-b341-4699-a445-7bfea84dc013" name="delete:\customer:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="7c093e69-2b5a-4be9-8125-32a06a479ca3" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+   <munit:test name="sapi-store-test-suite-get:\transaction:sapi-store-configTest" doc:id="0f27abe6-6510-4316-937d-29d2308fc979" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d1819415-c87e-4897-a97d-326dd876e1fa" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="350d78ca-b1ff-421b-94f5-ee73130c9f79" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="1fb937e3-89f2-448f-9c98-7d2dbf783099" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://transaction.json','application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\transaction:sapi-store-config" doc:id="a33d9eea-c404-4177-8d49-c6158594ea1a" name="get:\transaction:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="16a7ff26-efef-467f-a800-73d5029a508a" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-get:\transactionReport:sapi-store-configTest" doc:id="b17ff992-d0d3-4385-85b5-175fc188f08d" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7c7b2dd0-beef-48af-b569-8c6f21b6a240" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="612f0d16-e9ec-4029-a120-ea395f7a7d58" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="ed967d20-c37d-4bf6-acd0-dc24498c7d55" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://transaction.json','application/json')]" mediaType="application/json" />
+				<munit:attributes value='#[
+&#10;{"queryParams" :{"transactionData":"2022-10-29","transactionDate":"2022-09-02"}}
+&#10;]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\transactionReport:sapi-store-config" doc:id="c8a0f92d-4173-41a0-9952-7e4145685fba" name="get:\transactionReport:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="dc558735-551e-44c4-b008-48af09b838af" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-get:\customer:sapi-storeAPIKIT:BAD_REQUEST" doc:id="45d7a189-fe6c-4066-9558-9f6378b32af7" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d6a60b08-6d13-4a22-bdb4-36fe0602ca2d" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching customer details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="2d04f671-ad56-4e98-9186-dec1357a7da4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\customer:sapi-store-config" doc:id="29de5306-0255-4488-8d10-c7ccaebd4613" name="get:\customer:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="609c6152-8a13-4b75-9a1f-b2da413c882e" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-get:\customer:sapi-store-APIKIT:NOT_FOUND" doc:id="7a0259ec-213b-404a-afb0-10baa56ecc92" description="Test" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5cceb02d-4c14-4345-b179-53a40e49d099" processor="db:select">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="fetching customer details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="2d04f671-ad56-4e98-9186-dec1357a7da4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to get:\customer:sapi-store-config" doc:id="a4b672e7-6089-4da7-88be-b104652d5580" name="get:\customer:sapi-store-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="71076e7a-197f-473c-9223-de07151240a3" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+     <munit:test name="sapi-store-test-suite-get:\transaction:sapi-store-APIKIT:METHOD_NOT_ALLOWED" doc:id="766a42bf-017d-4129-b301-d6525c195e2e" description="Test" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="27251d9e-2aea-45b7-8750-dbb1d4de2c16" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="350d78ca-b1ff-421b-94f5-ee73130c9f79" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="b5b485b9-6593-4781-b9c3-ff741b5af4a8" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://transaction.json','application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\transaction:sapi-store-config" doc:id="56a2cb12-d629-4441-9782-71fd8d4762a0" name="get:\transaction:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="3d6492c4-80ff-4533-95a2-bacd599c1a48" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-get:\transaction:sapi-store-APIKIT:NOT_ACCEPTABLE" doc:id="38852367-71eb-44b6-a147-d9533b062b41" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="937dd89a-d292-4568-a26a-0cccbf019dfa" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="350d78ca-b1ff-421b-94f5-ee73130c9f79" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="22df2a13-dea7-402c-8a87-3b24f256539f" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://transaction.json','application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\transaction:sapi-store-config" doc:id="47460b0c-290a-4785-8c84-db9eabb9bb44" name="get:\transaction:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="b1d6cda7-1c4c-4256-a402-76b69a5a9580" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-get:\transaction:sapi-store-APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="04451f55-3074-4c48-b1ca-2e0f07e38f34" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2f83df78-6e62-4488-826b-cd1f5fd2783e" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="350d78ca-b1ff-421b-94f5-ee73130c9f79" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="03739ecd-381b-4e0a-938e-32a82e03af4b" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://transaction.json','application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\transaction:sapi-store-config" doc:id="bac3c9c9-27e3-4299-8bae-cd2c88f50320" name="get:\transaction:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="687bc7bc-1efe-46bb-be93-7b35c61feb77" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-get:\product:sapi-store-configTest1" doc:id="809b1566-7bd8-4733-b86e-88237f4b759a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="891c3e74-bd9b-43b8-a77f-1fbc4546551d" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e4ee339e-f29e-4ee6-b989-15dc16abb37b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\product:sapi-store-config" doc:id="e2098638-558c-4cd4-ae9a-8b0b9fd84a68" name="get:\product:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="41b13ab9-1755-4a1c-ba56-5d20349827f0" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="sapi-store-test-suite-post:\product:application\json:sapi-store-configTest" doc:id="6308dd01-ad89-4f04-8cf7-2a2a119f20d6" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4e81cde4-45ad-4b93-b253-c9c1e494257c" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d741752d-956b-442b-b59e-218fbc667b6e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="4c3a9eb9-de72-402e-ab60-9e44ba2ed162" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://product.json','application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\product:application\json:sapi-store-config" doc:id="5fdb8094-ab65-49d7-9678-ce34b5a084a1" name="post:\product:application\json:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="836ded17-5b82-4822-bc42-8bb2e38e338d" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-put:\product:sapi-store-configTest" doc:id="00d1639c-4290-49ef-a3e0-2117e9c8a803" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="87314a89-0b3e-4dad-b677-128e37221973" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f7994b62-1e3c-4632-9c44-7d6deb23bbd7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="cd2dabd7-0038-4512-8c2e-fc688d1a9062" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://product.json','application/json')]" mediaType="application/json" />
+				<munit:attributes value='#[
+&#10;{"queryParams": {"productId":"2"}}
+&#10;]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\product:sapi-store-config" doc:id="74c5425e-7ed8-4cae-bb33-c5fe28af3900" name="put:\product:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0b2c4bda-e1e2-4df9-9838-7e0ab5d80e02" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sapi-store-test-suite-delete:\product:sapi-store-configTest" doc:id="15a84e1d-2bde-4323-a6f3-49d03a6fb232" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="39047364-8f0d-4a53-9e55-e48be6415372" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3710e9fa-505d-4ecc-aaf1-c2ece156977b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="fd35195e-7e5f-48ea-a6ee-00093c3e5ed1">
+				<munit:payload value="#[output application/json --- readUrl('classpath://product.json','application/json')]" mediaType="application/json" />
+				<munit:attributes value='#[
+&#10;{"queryParams": {"productId":"2"}}
+&#10;]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to delete:\product:sapi-store-config" doc:id="70298c20-aa69-4cf3-900a-fae951d59ca1" name="delete:\product:sapi-store-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0c642c30-6609-4d69-ad8e-4ee53b56d78f" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>

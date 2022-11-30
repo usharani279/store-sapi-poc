@@ -1,0 +1,11 @@
+http:
+ listener:
+  port: "8081"
+  host: "0.0.0.0"
+  
+database:
+ port: "3306"
+ host: "localhost"
+ user: "![RerTIqC4fXOxwBPcLovSIw==]"
+ password: "![RerTIqC4fXOxwBPcLovSIw==]"
+ db: "customer_product"

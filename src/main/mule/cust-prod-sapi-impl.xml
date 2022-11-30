@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	
+	<sub-flow name="insertingCustomerData-flow" doc:id="674e586a-ca8d-46c4-8734-ac686ba0b900" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="4a9045e2-7bad-481a-842a-ef6348f00a1b" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="creating variable storing inputData" doc:id="fe8fb753-d5d6-43fa-aea0-04d30a7bfdc6" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:insert doc:id="5a2a6758-ee3d-495f-81a4-dbc1f64d7a89" config-ref="Database_Config" doc:name="Inserting customer data">
+			<db:sql ><![CDATA[insert into customer (customerName,phoneNum,address)
+values(:customerName,:phoneNum,:address)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"customerName" : vars.inputData.customerName,
+	"phoneNum" : vars.inputData.phoneNum,
+	"address" : vars.inputData.address
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="final Payload" doc:id="b6e08e73-1a33-407b-81ac-571a4a0aa450" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"inserted successfully"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	
+</sub-flow>
+	<sub-flow name="fetchingCustomerData-flow" doc:id="c1286890-f42d-4426-b448-dc876d6dad45" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="a58ad835-d078-47a9-9561-079c640c9520" message='#["Before connecting database"]'/>
+		<db:select doc:name="fetching customer details" doc:id="2d04f671-ad56-4e98-9186-dec1357a7da4" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from customer ]]></db:sql>
+		
+</db:select>
+		<ee:transform doc:name="final Payload" doc:id="686ac922-85bd-4110-9855-65bd88c8b84f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="updatingCustomer-flow" doc:id="42780c01-f573-44d1-b961-3c9d3f27314a" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="61150959-b503-4f6f-9bab-eba26977e0c6" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="88ac30e8-3602-4909-ba6e-1be230bab1a4" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="id" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.customerId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:update doc:name="Updating customer details" doc:id="9ffe80aa-6c29-4eb6-b702-74c1def9c6a1" config-ref="Database_Config">
+			<db:sql ><![CDATA[update customer set address=:address where customerId= :customerId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	customerId : vars.id,
+	address : vars.inputData.address
+	
+	
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="final Payload" doc:id="bfdd73f4-94fa-454a-9861-9c779b9edc06" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="deleteCustomer-flow" doc:id="5e327fb6-b4ce-4844-9dc4-9c02c905fa9b" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="682bfa79-c621-4a86-a53e-e3be6f7e70ad" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="a5a9d260-dfc4-473e-b377-c6439dece608" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="id" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.customerId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:delete doc:name="Deleting customer Data" doc:id="9cee50e0-19f9-4c10-b43b-ab4dbb1330e5" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from customer where customerId= :customerId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	customerId : vars.id
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="final payload" doc:id="b2551377-2edc-4b0a-94bb-41ccc8621ade" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="inserting-ProductData-flow" doc:id="d3e1d371-cfb9-4078-aeda-41e6d16dded2" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="c02d2c8d-bdf8-45f4-9bb0-7141aed558c0" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="creating variable and storing inputData" doc:id="fc73082b-354a-4c49-bb18-01227dd268b5" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:insert doc:id="d741752d-956b-442b-b59e-218fbc667b6e" config-ref="Database_Config" doc:name="inserting product Details">
+			<db:sql ><![CDATA[insert into product (productName,price,productBrand,qty,serialNo)
+values(:productName,:price,:productBrand,:qty,:serialNo)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"productName" : vars.inputData.productName,
+	"price" : vars.inputData.price,
+	"productBrand" : vars.inputData.productBrand,
+	"qty" : vars.inputData.qty,
+	"serialNo" : vars.inputData.serialNo
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="final Payload" doc:id="f504ae2f-4424-4d40-b0d3-1f9435642da9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"inserted successfully"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="fetching-ProductData-flow" doc:id="64b2e15a-3da8-4ae7-a30f-9c65200c9278" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="3ec5a913-9489-40dd-8655-b4b68dc631ff" message='#["Before connecting database"]'/>
+		<db:select doc:name="fetching product Details" doc:id="e4ee339e-f29e-4ee6-b989-15dc16abb37b" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from product]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="final Payload" doc:id="36a19ced-f6f5-40f7-9296-d10fa1fbf4e6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="updating-Product-flow" doc:id="6faf6bb5-fe39-4ca4-95d3-a4ed158c0b35" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="755c655a-ae6d-4461-9bf4-edb655e98c00" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="ae2e8c2e-855c-4ce8-a5ea-ff23e92a1cbf" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="id" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.productId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:update doc:name="Updating product details" doc:id="f7994b62-1e3c-4632-9c44-7d6deb23bbd7" config-ref="Database_Config">
+			<db:sql ><![CDATA[update product set productBrand=:productBrand where productId= :productId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	productId : vars.id,
+	productBrand : vars.inputData.productBrand
+	
+	
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="final payload" doc:id="8463b0bc-fe2e-458e-9905-47d647dda392" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="delete-Product-flow" doc:id="7460a812-8102-4895-ab9c-62088edc0250" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="e44cdb1d-dbda-4252-9bda-10d134c719d8" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="cd3bbb5f-c59e-4cfe-a19b-7b65c6327790" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="id" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.productId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:delete doc:name="Deleting product data" doc:id="3710e9fa-505d-4ecc-aaf1-c2ece156977b" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from product where productId= :productId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	productId : vars.id
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="final Payload" doc:id="50814934-873a-45c0-b525-14a7378cb711" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="fetchTransactionDetails_Flow" doc:id="b00cb6a1-a79b-42e0-ada8-407095f55ffb" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="b3ede894-e21a-4d60-9a21-b837261b4a32" message='#["Before connecting database"]'/>
+		<db:select doc:name="fetching transaction Details" doc:id="350d78ca-b1ff-421b-94f5-ee73130c9f79" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from transaction;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="mapping payload" doc:id="a8f3c47d-5d22-417f-b2f4-7b5b0616c5e8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+    "transactionDate" : $.transactionDate as Date,
+    "paymentMode": $.paymentMode,
+        "productId": $.productId,
+        "customerId": $.customerId,
+        "productName": $.productName,
+        "productBrand": $.productBrand,
+        "transactionId": $.transactionId
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="transactionReport_Flow" doc:id="17c0696f-5e2c-45c7-96de-214f0def11b5" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="ecbb38f1-694e-4b45-8e72-3bcc11535de5" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="4907b96f-a0e1-4353-9f5d-af3505afbfe0">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="startDate"><![CDATA[%dw 2.0
+output application/json
+---
+((attributes.queryParams.transactionDate splitBy  "to") [0])]]></ee:set-variable>
+				<ee:set-variable variableName="endDate" ><![CDATA[%dw 2.0
+output application/json
+---
+((attributes.queryParams.transactionDate splitBy  "to") [-1])]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:select doc:name="fetching transaction reports" doc:id="612f0d16-e9ec-4029-a120-ea395f7a7d58" config-ref="Database_Config">
+			<db:sql><![CDATA[#["select * from transaction where transactionDate between '$(vars.startDate)' and '$(vars.endDate)'"]]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="mapping payload" doc:id="e0752b93-610f-4acb-ab33-0608c5ed32ba">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+    "transactionDate" : $.transactionDate as Date,
+    "paymentMode": $.paymentMode,
+        "productId": $.productId,
+        "customerId": $.customerId,
+        "productName": $.productName,
+        "productBrand": $.productBrand,
+        "transactionId": $.transactionId
+}
+
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<ee:transform doc:name="creating variable finalData and converting to csv" doc:id="2255b425-7a08-4cd7-a9ba-e8a33ab30e11" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="finalData" ><![CDATA[%dw 2.0
+output application/csv quoteValues = true
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="finalName" ><![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+var b=((vars.endDate substringAfterLast  "-") as Number)-((vars.startDate substringAfterLast  "-") as Number)
+var month=((b contains 30) or (b contains 29) or (b contains 27))
+---
+if ( b==0 ) "daily reports" else if ( b==7 ) "Weekly Report" else if ( month ) "Monthly Report" else "Please check the dates"]]></ee:set-variable>
+				<ee:set-variable variableName="filePath" ><![CDATA[%dw 2.0
+output application/json
+---
+"D:\store-"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<file:write doc:id="f1a4f69f-c8d6-42a1-add2-1346e7db057d" config-ref="File_Config" path='#[vars.filePath ++  vars.finalName ++ ".csv"]' doc:name="storing in localfile">
+			<file:content ><![CDATA[#[vars.finalData]]]></file:content>
+		</file:write>
+		<ee:transform doc:name="finalPayload" doc:id="c63b0f09-962b-45ec-a0cd-151c01d1634f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	
+</mule>

@@ -1,0 +1,120 @@
+#%RAML 1.0
+title: store-api
+description: crud operation for customer and product
+traits: 
+  error_response : !include traits/trait-error.raml
+securitySchemes:
+  security: !include traits/trait-header.raml
+
+securedBy: [security]
+types:
+  customer : !include dataType/customer-dataType.raml
+  product : !include dataType/product-dataType.raml
+  transaction: !include dataType/transaction-dataType.raml
+/customer:
+  is: [error_response]
+  post:
+    body:
+      application/json:
+        type: customer
+        example: !include dataType/cust-post-response.json   
+    responses:
+      201:
+        body:
+          application/json:
+            type: customer
+            example: !include dataType/cust-post-response.json             
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include /dataType/customer-response.json
+            type: customer
+  put:
+    queryParameters:
+      customerId:
+        required: true
+        type: number
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include /dataType/customer-response.json
+            type: customer
+  delete:
+    queryParameters:
+      customerId:
+        required: true
+        type: number
+    responses:
+      202:
+        body:
+          application/json:
+            example: 
+            type: customer
+/product:
+  is: [error_response] 
+  post:
+    body:
+      application/json:
+        type: product
+        example: !include dataType/product-post-response.json
+    responses:
+      201:
+        body:
+          application/json:
+            type: product
+            example: !include dataType/product-response.json
+            
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include dataType/product-response.json
+            type: product
+  put:
+    queryParameters:
+      productId:
+        required: true
+        type: number
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include dataType/product-response.json
+            type: product
+  delete:
+    queryParameters:
+      productId:
+        required: true
+        type: number
+    responses:
+      202:
+        body:
+          application/json:
+            example: !include dataType/product-response.json
+            type: product
+/transaction:
+  is: [error_response]
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include dataType/transaction-get-response.json
+            type: transaction
+/transactionReport:
+  is: [error_response]
+  get:
+    queryParameters:
+      transactionDate:
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include dataType/transaction-get-response.json
+            type: transaction

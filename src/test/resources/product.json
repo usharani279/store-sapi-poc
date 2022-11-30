@@ -1,0 +1,18 @@
+[
+{
+        "productId": 1,
+        "price": "8000000",
+        "qty": "3",
+        "productName": "laptop",
+        "productBrand": "hp",
+        "serialNo": "123"
+    },
+     {
+        "productId": 2,
+        "price": "1000000",
+        "qty": "1",
+        "productName": "laptop",
+        "productBrand": "apple",
+        "serialNo": "L456"
+    }
+]

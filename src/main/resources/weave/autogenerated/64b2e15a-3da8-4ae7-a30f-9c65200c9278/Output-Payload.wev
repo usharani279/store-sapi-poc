@@ -1,0 +1,11 @@
+%dw 2.0
+
+type auto_64b2e15a_3da8_4ae7_a30f_9c65200c9278_Output_Payload = {
+  productId?: Number, 
+  price?: String, 
+  productBrand?: String, 
+  qty?: Number, 
+  productName?: String, 
+  _?: Any
+}
+

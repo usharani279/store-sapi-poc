@@ -1,0 +1,12 @@
+[{
+        "address": "hyderabad",
+        "customerId": 1,
+        "phoneNum": "9678009876",
+        "customerName": "usha"
+    },
+    {
+        "address": "srnagr",
+        "customerId": 2,
+        "phoneNum": "9087654326",
+        "customerName": "vasanth"
+    }]

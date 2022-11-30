@@ -1,0 +1,19 @@
+[
+    {
+        "transactionDate": "2022-09-27",
+        "paymentMode": "cash",
+        "productId": "2",
+        "customerId": "1",
+        "productName": "tab",
+        "productBrand": "mi",
+        "transactionId": 1
+    },
+    {
+        "transactionDate": "2022-09-28",
+        "paymentMode": "online",
+        "productId": "2",
+        "customerId": "1",
+        "productName": "mobile",
+        "productBrand": "samsung",
+        "transactionId": 2
+    }]
