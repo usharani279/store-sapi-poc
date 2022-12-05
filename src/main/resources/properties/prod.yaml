@@ -6,6 +6,4 @@ http:
 database:
  port: "3306"
  host: "localhost"
- user: "![RerTIqC4fXOxwBPcLovSIw==]"
- password: "![RerTIqC4fXOxwBPcLovSIw==]"
  db: "customer_product"

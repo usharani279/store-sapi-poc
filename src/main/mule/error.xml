@@ -83,5 +83,35 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
-        </error-handler>
+            <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="008c10c3-8cfa-418a-96e6-c9acba48729b" type="DB:BAD_SQL_SYNTAX, DB:CONNECTIVITY, DB:QUERY_EXECUTION">
+			<ee:transform doc:name="Transform Message" doc:id="098419d4-c41d-40be-9448-3b75049fee67" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+  
+  "errorType": "DB:BAD_SQL_SYNTAX, DB:CONNECTIVITY, DB:QUERY_EXECUTION",
+  "errorDescription": "Database errors "
+
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ab9511c8-a8e5-405d-bd19-d8b88fdafde2" type="FILE:ACCESS_DENIED, FILE:CONNECTIVITY, FILE:FILE_ALREADY_EXISTS, FILE:ILLEGAL_PATH">
+			<ee:transform doc:name="Transform Message" doc:id="d245f7d0-f240-4a4b-b9a4-76044ae45a20" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "status" : "FILE:ACCESS_DENIED, FILE:CONNECTIVITY, FILE:FILE_ALREADY_EXISTS, FILE:ILLEGAL_PATH",
+  "code" : error.errorType.identifier ,
+  "message" :  error.description,
+  "description" : error.detailedDescription
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
 	</mule>

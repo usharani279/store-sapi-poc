@@ -15,33 +15,53 @@
         <error-handler ref="error-s-Error_Handler" />
     </flow>
     <flow name="put:\customer:sapi-store-config">
-        <flow-ref doc:name="calling updatingCustomer-flow" doc:id="4ed63f42-4c93-49bf-a80f-4b52a607ac0a" name="updatingCustomer-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="831a27c4-4373-4488-aac5-6995eccf3af0" message="Start logger"/>
+		<flow-ref doc:name="Calling updatingCustomer-flow" doc:id="4ed63f42-4c93-49bf-a80f-4b52a607ac0a" name="updatingCustomer-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="d99861c7-c48b-43f3-b100-1b22000f1c45" message="End logger"/>
     </flow>
     <flow name="put:\product:sapi-store-config">
-        <flow-ref doc:name="calling updating-Product-flow" doc:id="6920e48d-75eb-4a44-a967-d9617d8691db" name="updating-Product-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="b79de649-e581-414c-a5f6-7cfac0f50c4a" message="Start logger"/>
+		<flow-ref doc:name="calling updating-Product-flow" doc:id="6920e48d-75eb-4a44-a967-d9617d8691db" name="updating-Product-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="32e29f28-4d1a-4df2-9d25-2771fa9894ac" message="End logger"/>
     </flow>
     <flow name="delete:\customer:sapi-store-config">
-        <flow-ref doc:name="calling deleteCustomer-flow" doc:id="0e5f9576-b017-4337-a32c-bb6075f5b17e" name="deleteCustomer-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="0b4dbcba-ab99-4b64-ac4f-40274a30a61f" message="Start logger"/>
+		<flow-ref doc:name="calling deleteCustomer-flow" doc:id="0e5f9576-b017-4337-a32c-bb6075f5b17e" name="deleteCustomer-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="b778238d-d5b7-4966-91f1-810d1ea2add5" message="End logger"/>
     </flow>
     <flow name="delete:\product:sapi-store-config">
-        <flow-ref doc:name="calling delete-Product-flow" doc:id="f2b078f2-43ee-4a29-bdb1-842c0bbdf6f4" name="delete-Product-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="63753c17-0cab-44a4-85b9-0a3331c54603" message="Start logger"/>
+		<flow-ref doc:name="calling delete-Product-flow" doc:id="f2b078f2-43ee-4a29-bdb1-842c0bbdf6f4" name="delete-Product-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="bfa327dc-ed79-4a7e-92d0-9b3b4f8c69af" message="End logger"/>
     </flow>
     <flow name="get:\customer:sapi-store-config">
-        <flow-ref doc:name="calling fetchingCustomerData-flow" doc:id="77cfa9fc-7199-450e-a4d5-4a36f329f293" name="fetchingCustomerData-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="8f2b16bf-a5b7-4410-a599-d7567f05b895" message="Start logger"/>
+		<flow-ref doc:name="calling fetchingCustomerData-flow" doc:id="77cfa9fc-7199-450e-a4d5-4a36f329f293" name="fetchingCustomerData-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="fa7e4c7c-ee67-4e36-9b0c-2d1c3068a752" message="End logger"/>
     </flow>
     <flow name="get:\product:sapi-store-config">
-        <flow-ref doc:name="calling fetching-ProductData-flow" doc:id="737033d6-1afd-4164-94cb-517c899052d0" name="fetching-ProductData-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="af9dcd24-bb37-4d30-b344-5795f563b87f" message="Start logger"/>
+		<flow-ref doc:name="calling fetching-ProductData-flow" doc:id="737033d6-1afd-4164-94cb-517c899052d0" name="fetching-ProductData-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="0fd0bc90-c46c-42b5-ba57-323f9ebc1984" message="End logger"/>
     </flow>
     <flow name="get:\transaction:sapi-store-config">
-        <flow-ref doc:name="calling fetchTransactionDetails_Flow" doc:id="27266d26-6266-415a-89b7-ea5be2111d25" name="fetchTransactionDetails_Flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="433520b8-9ebd-4343-ac09-bfea90e2a869" message="Start logger"/>
+		<flow-ref doc:name="calling fetchTransactionDetails_Flow" doc:id="27266d26-6266-415a-89b7-ea5be2111d25" name="fetchTransactionDetails_Flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="7ce686ae-b0ee-4b05-8ea2-9a336e12dc45" message="End logger"/>
     </flow>
     <flow name="post:\customer:application\json:sapi-store-config">
-        <flow-ref doc:name="calling insertingCustomerData-flow" doc:id="078ba178-602a-4a63-99c4-894815c26e25" name="insertingCustomerData-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="77d5d613-c3cc-46d7-abbf-56ba894a62a0" message="Start logger"/>
+		<flow-ref doc:name="calling insertingCustomerData-flow" doc:id="078ba178-602a-4a63-99c4-894815c26e25" name="insertingCustomerData-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="a3b27083-b298-4c78-a0d5-8b92ac59c674" message="End logger"/>
     </flow>
     <flow name="post:\product:application\json:sapi-store-config">
-        <flow-ref doc:name="calling inserting-ProductData-flow" doc:id="30820998-7f2f-4438-93b1-19791821017f" name="inserting-ProductData-flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="52d95b7d-d59d-4e23-8a30-943f2cdcd913" message="Start logger"/>
+		<flow-ref doc:name="calling inserting-ProductData-flow" doc:id="30820998-7f2f-4438-93b1-19791821017f" name="inserting-ProductData-flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="83a4f2f8-3e7d-49ee-affd-a4df4c7ea751" message="End logger"/>
     </flow>
     <flow name="get:\transactionReport:sapi-store-config">
-        <flow-ref doc:name="calling transactionReport_Flow" doc:id="5edcfbcd-c2a3-44ff-923f-20911f00f205" name="transactionReport_Flow" />
+        <logger level="INFO" doc:name="Start logger" doc:id="e71dd9d3-5ab3-4e0b-bd16-86a658677522" message="Start logger"/>
+		<flow-ref doc:name="calling transactionReport_Flow" doc:id="5edcfbcd-c2a3-44ff-923f-20911f00f205" name="transactionReport_Flow" />
+		<logger level="INFO" doc:name="End logger" doc:id="8128807b-cd49-49d8-8dd7-45b90d8da3f4" message="End logger"/>
     </flow>
 </mule>

@@ -14,12 +14,21 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 	<http:listener-config name="store-api-httpListenerConfig" doc:name="HTTP Listener config" doc:id="aaf4a437-89f1-41ca-92bb-5e41b0bf1b9c" >
 		<http:listener-connection host="${http.listener.host}" port="${http.listener.port}" />
 	</http:listener-config>
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="14a8bdc3-d927-45b3-a6d1-85ed38430552" >
+	<db:config name="Database_customer-Config" doc:name="Database Config" doc:id="14a8bdc3-d927-45b3-a6d1-85ed38430552" >
 		<db:my-sql-connection host="${database.host}" port="${database.port}" user="${secure::database.user}" password="${secure::database.password}" database="${database.db}" />
 	</db:config>
 	<file:config name="File_Config" doc:name="File Config" doc:id="abdba7b9-9fef-4908-8b16-529d2b6fcbb5" />
 	<configuration doc:name="Configuration" doc:id="d904088e-4351-48e8-8da1-64ac0831704a" defaultErrorHandler-ref="error-s-Error_Handler" />
-	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure_Properties_Config" doc:id="cf9cb82d-4a12-438b-ac21-c8ac81724add" file="properties/${env}.yaml" key="${key}" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure_Properties_Config" doc:id="cf9cb82d-4a12-438b-ac21-c8ac81724add" file="secure.yaml" key="${key}" />
 	<configuration-properties doc:name="Configuration properties" doc:id="53854bcc-5d2b-4c25-ae8b-49532ae831d0" file="properties/${env}.yaml" />
+	<db:config name="Database_product-Config" doc:name="Database Config" doc:id="11f25a8a-75d2-4598-8d09-d961eb2e0215" >
+		<db:my-sql-connection host="${database.host}" port="${database.port}" user="${secure::database.user}" password="${secure::database.password}" database="${database.db}" />
+	</db:config>
+	<db:config name="Database_transaction-Config" doc:name="Database Config" doc:id="0635550f-4b30-438f-9325-59ef0e727d4e" >
+		<db:my-sql-connection host="${database.host}" port="${database.port}" user="${secure::database.user}" password="${secure::database.password}" database="${database.db}" />
+	</db:config>
+	<db:config name="Database_transactionReport-Config" doc:name="Database Config" doc:id="6edbac0f-9318-4122-aa78-9c0de1043dfa" >
+		<db:my-sql-connection host="${database.host}" port="${database.port}" user="${secure::database.user}" password="${secure::database.password}" database="${database.db}" />
+	</db:config>
 	
 </mule>

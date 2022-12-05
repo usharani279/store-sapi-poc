@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	
+	
+	
+	
+	<sub-flow name="transactionReport_Flow" doc:id="17c0696f-5e2c-45c7-96de-214f0def11b5" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="ecbb38f1-694e-4b45-8e72-3bcc11535de5" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="4907b96f-a0e1-4353-9f5d-af3505afbfe0">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="startDate"><![CDATA[%dw 2.0
+output application/json
+---
+((attributes.queryParams.transactionDate splitBy  "to") [0])]]></ee:set-variable>
+				<ee:set-variable variableName="endDate" ><![CDATA[%dw 2.0
+output application/json
+---
+((attributes.queryParams.transactionDate splitBy  "to") [-1])]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:select doc:name="fetching transaction reports" doc:id="612f0d16-e9ec-4029-a120-ea395f7a7d58" config-ref="Database_transactionReport-Config">
+			<db:sql><![CDATA[#["select * from transaction where transactionDate between '$(vars.startDate)' and '$(vars.endDate)'"]]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="mapping payload" doc:id="e0752b93-610f-4acb-ab33-0608c5ed32ba">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+    "transactionDate" : $.transactionDate as Date,
+    "paymentMode": $.paymentMode,
+        "productId": $.productId,
+        "customerId": $.customerId,
+        "productName": $.productName,
+        "productBrand": $.productBrand,
+        "transactionId": $.transactionId
+}
+
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<ee:transform doc:name="creating variable finalData and converting to csv" doc:id="2255b425-7a08-4cd7-a9ba-e8a33ab30e11" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="finalData" ><![CDATA[%dw 2.0
+output application/csv quoteValues = true
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="finalName" ><![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+var b=((vars.endDate substringAfterLast  "-") as Number)-((vars.startDate substringAfterLast  "-") as Number)
+var month=((b contains 30) or (b contains 29) or (b contains 27))
+---
+if ( b==0 ) "daily reports" else if ( b==7 ) "Weekly Report" else if ( month ) "Monthly Report" else "Please check the dates"]]></ee:set-variable>
+				<ee:set-variable variableName="filePath" ><![CDATA[%dw 2.0
+output application/json
+---
+"D:\store-"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<file:write doc:id="f1a4f69f-c8d6-42a1-add2-1346e7db057d" config-ref="File_Config" path='#[vars.filePath ++  vars.finalName ++ ".csv"]' doc:name="storing in localfile">
+			<file:content><![CDATA[#[vars.finalData]]]></file:content>
+		</file:write>
+		<ee:transform doc:name="finalPayload" doc:id="c63b0f09-962b-45ec-a0cd-151c01d1634f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	
+</mule>

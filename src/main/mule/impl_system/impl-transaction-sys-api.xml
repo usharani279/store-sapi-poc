@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="fetchTransactionDetails_Flow" doc:id="c7d03e60-1330-4629-8d61-e9fd993c9e67" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="aee838f2-9397-4564-b7fa-66dcf2dca637" message='#["Before connecting database"]'/>
+		<db:select doc:name="fetching transaction Details" doc:id="d2acfcee-98d1-4cbd-93fc-d2067742578d" config-ref="Database_transaction-Config">
+			<db:sql ><![CDATA[select * from transaction;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="mapping payload" doc:id="e246a7c3-080b-4bd9-8065-8a9b1e07e632" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+    "transactionDate" : $.transactionDate as Date,
+    "paymentMode": $.paymentMode,
+        "productId": $.productId,
+        "customerId": $.customerId,
+        "productName": $.productName,
+        "productBrand": $.productBrand,
+        "transactionId": $.transactionId
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	</mule>

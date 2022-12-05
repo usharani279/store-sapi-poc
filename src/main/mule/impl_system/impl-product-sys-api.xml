@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="inserting-ProductData-flow" doc:id="0d95f487-eba6-40d4-b025-1740464503c4" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="68a089f2-e8ff-4af1-bf9d-b9e27d52db37" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="creating variable and storing inputData" doc:id="0baa3b42-4cc3-4aa0-8b0e-8df792100fde" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:insert doc:id="fe807257-a2bf-4b30-81a0-a27d03e5c4c0" config-ref="Database_product-Config" doc:name="inserting product Details">
+			<db:sql ><![CDATA[insert into product (productName,price,productBrand,qty,serialNo)
+values(:productName,:price,:productBrand,:qty,:serialNo)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"productName" : vars.inputData.productName,
+	"price" : vars.inputData.price,
+	"productBrand" : vars.inputData.productBrand,
+	"qty" : vars.inputData.qty,
+	"serialNo" : vars.inputData.serialNo
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="final Payload" doc:id="697ba24a-0a86-4208-b39a-6951cc6e4035" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"inserted successfully"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="fetching-ProductData-flow" doc:id="9c48d155-000c-4a35-8429-bdcc08ea4b74" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="0480aa0e-b91f-41f4-b163-ee8d3f91041f" message='#["Before connecting database"]'/>
+		<db:select doc:name="fetching product Details" doc:id="05ca15c7-123c-4508-9a5f-418471bcc8e6" config-ref="Database_product-Config">
+			<db:sql ><![CDATA[select * from product]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="final Payload" doc:id="b203861a-c85c-4a68-a299-f785ae533750" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="updating-Product-flow" doc:id="a8748bda-e1d7-45c3-b04e-96c2f7937f13" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="bc9393cf-3862-420e-a576-9865410050b6" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="f25f6c28-a736-409b-9b5a-211f10823e14" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="id" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.productId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:update doc:name="Updating product details" doc:id="132dc0f5-ef78-4ea3-b085-4e74bb66d359" config-ref="Database_product-Config">
+			<db:sql ><![CDATA[update product set productBrand=:productBrand where productId= :productId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	productId : vars.id,
+	productBrand : vars.inputData.productBrand
+	
+	
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="final payload" doc:id="09322f5f-56ff-4a35-a791-bbbb70d8a3a3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="delete-Product-flow" doc:id="165ae4ea-7b8a-46c6-8593-0e84d4037994" >
+		<logger level="INFO" doc:name="Before connecting database" doc:id="4777b410-f9b2-457a-96b7-ecd7e545a88d" message='#["Before connecting database"]'/>
+		<ee:transform doc:name="metaData" doc:id="d994d965-ecbd-49a9-bd12-07c41b2ccd5c" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="id" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.productId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:delete doc:name="Deleting product data" doc:id="47ee6cf1-f932-4eeb-8b3d-209492f91bc5" config-ref="Database_product-Config">
+			<db:sql ><![CDATA[delete from product where productId= :productId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	productId : vars.id
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="final Payload" doc:id="7f2590a3-f843-4883-9614-23e1d35de6f5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	</mule>
